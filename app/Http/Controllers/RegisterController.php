@@ -60,22 +60,4 @@ class RegisterController extends BaseController
             return response()->json(['error' => 'UnAuthorised'], 401);
         }
     }
-
-    public function loggin(Request $request)
-    {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user = Auth::user();
-            $success['name'] =  $user->first_name;
-            $token =  $user->createToken('MyApp')-> accessToken;
-
-            return response()->json([
-                "user" => $user,
-                "token" => $token
-            ],200);
-//            return $this->sendResponse($success, 'User login successfully.');
-        }
-        else{
-            return response()->json(['error' => 'UnAuthorised'], 401);
-        }
-    }
 }
