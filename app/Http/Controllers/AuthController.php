@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class RegisterController extends BaseController
+class AuthController extends BaseController
 {
     /**
      * Register api
@@ -45,19 +45,25 @@ class RegisterController extends BaseController
      */
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        $data = $request->all();
+        if(auth()->attempt($data)){
             $user = Auth::user();
-            $success['name'] =  $user->first_name;
             $token =  $user->createToken('MyApp')-> accessToken;
 
             return response()->json([
-                "user" => $user,
-                "token" => $token
+                'user' => $user,
+                'token' => $token
             ],200);
-//            return $this->sendResponse($success, 'User login successfully.');
         }
         else{
             return response()->json(['error' => 'Email Or Password Is Not Correct, pleas try again...!'], 401);
         }
+    }
+
+    public function index(){
+        $users = User::all();
+        return response()->json([
+            'users' => $users
+        ]);
     }
 }

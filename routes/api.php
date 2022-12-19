@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BaseController;
 
 
@@ -17,10 +17,8 @@ use App\Http\Controllers\BaseController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('register', [AuthController::class, 'register']);
+Route::post('loggin', [AuthController::class, 'login']);
+Route::get('users',[AuthController::class,'index'])->middleware('auth:api');
 
-});
-Route::post('register', [RegisterController::class, 'register']);
-Route::post('login', [RegisterController::class, 'login']);
-//hi billa
+
