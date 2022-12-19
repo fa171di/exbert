@@ -15,9 +15,10 @@ class RegisterController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
@@ -26,23 +27,15 @@ class RegisterController extends BaseController
             'phoneNumber'=>'required',
             'address'=>'required',
         ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['first_name'] =  $user->first_name;
-        $success['last_name'] =  $user->last_name;
-        $success['email'] =  $user->email;
-        $success['password'] =  $user->password;
-        $success['phoneNumber'] =  $user->phoneNumber;
-        $success['address'] =  $user->address;
-
-        return $this->sendResponse($success, 'User register successfully.');
+        $accessToken=  $user->createToken('Personal Access Token')->accessToken;
+        $user->remember_token = $accessToken;
+        return response()->json([
+            "user" => $user,
+            "token" => $accessToken
+        ],200);
     }
 
     /**
@@ -54,13 +47,17 @@ class RegisterController extends BaseController
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
             $success['name'] =  $user->first_name;
-            return response()->json($user);
+            $token =  $user->createToken('MyApp')-> accessToken;
+
+            return response()->json([
+                "user" => $user,
+                "token" => $token
+            ],200);
 //            return $this->sendResponse($success, 'User login successfully.');
         }
         else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+            return response()->json(['error' => 'UnAuthorised'], 401);
         }
     }
 }
