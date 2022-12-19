@@ -20,4 +20,5 @@ use App\Http\Controllers\BaseController;
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 Route::post('logihn', [RegisterController::class, 'login']);
+Route::post('logihssn', [RegisterController::class, 'login']);
 //hi billa
