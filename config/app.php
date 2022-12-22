@@ -182,7 +182,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
-
+        Cartalyst\Sentinel\Laravel\SentinelServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -210,6 +210,9 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Activation' => Cartalyst\Sentinel\Laravel\Facades\Activation::class,
+        'Reminder'   => Cartalyst\Sentinel\Laravel\Facades\Reminder::class,
+        'Sentinel'   => Cartalyst\Sentinel\Laravel\Facades\Sentinel::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
