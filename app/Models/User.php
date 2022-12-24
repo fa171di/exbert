@@ -49,4 +49,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function expert(){
+        return $this->hasOne(Expert::class);
+    }
 }

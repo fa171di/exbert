@@ -10,7 +10,7 @@ class ExpertAvailableTime extends Model
     use HasFactory;
     protected $table = 'expert_available_times';
     protected $fillable = [
-        'doctor_id',
+        'expert_id',
         'from',
         'to',
         'is_deleted'

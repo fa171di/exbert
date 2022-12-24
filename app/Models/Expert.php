@@ -20,4 +20,8 @@ class Expert extends Model
         'slot_time',
         'is_deleted',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
 }
