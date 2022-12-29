@@ -6,6 +6,7 @@ use App\Models\Expert;
 use App\Models\ExpertAvailableDay;
 use App\Models\ExpertAvailableSlot;
 use App\Models\ExpertAvailableTime;
+use App\Models\Specialization;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController as BaseController;
@@ -39,7 +40,7 @@ class AuthController extends BaseController
             $extention = $file->getClientOriginalExtension();
             $imageName = time() . '.' . $extention;
             $file->move('assets/images/users', $imageName);
-            $input['profile_photo'] = $imageName;
+            $input['profile_photo'] ='assets/images/users/' . $imageName;
         }
         $user = Sentinel::registerAndActivate($input);
         $role = Sentinel::findRoleBySlug('user');
@@ -47,9 +48,11 @@ class AuthController extends BaseController
         $usr = User::find($user->id);
         $accessToken=  $usr->createToken('Personal Access Token')->accessToken;
         $usr->remember_token = $accessToken;
+        $specializations = Specialization::where('is_deleted',0)->get();
         return response()->json([
-            "user" => $user,
-            "token" => $accessToken
+            'user' => $user,
+            'specializations' => $specializations,
+            'token' => $accessToken
         ],200);
     }
 
@@ -86,7 +89,7 @@ class AuthController extends BaseController
             $extention = $file->getClientOriginalExtension();
             $imageName = time() . '.' . $extention;
             $file->move('assets/images/users', $imageName);
-            $input['profile_photo'] = $imageName;
+            $input['profile_photo'] ='assets/images/users/' . $imageName;
         }
         $user = Sentinel::registerAndActivate($input);
         $role = Sentinel::findRoleBySlug('expert');
@@ -156,9 +159,10 @@ class AuthController extends BaseController
                 }
             }
             $availableSlots = ExpertAvailableSlot::where('expert_id',$user->id)->get();
+            $exp = Expert::with('specialization')->where('user_id',$user->id)->first();
         return response()->json([
             'user' => $user,
-            'expert' => $expert,
+            'expert' => $exp,
             'aviailable_slots' => $availableSlots,
             'token' => $accessToken
         ],200);
@@ -181,8 +185,10 @@ class AuthController extends BaseController
             $usr = User::find($user->id);
             $token =  $usr->createToken('MyApp')-> accessToken;
             if ($user->roles[0]->slug == 'user') {
+                $specializations = Specialization::with('experts')->where('is_deleted',0)->get();
                 return response()->json([
                     'user' => $user,
+                    'specializations' => $specializations,
                     'role' => 'user',
                     'token' => $token
                 ], 200);
