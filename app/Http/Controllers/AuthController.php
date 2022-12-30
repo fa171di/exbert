@@ -22,6 +22,10 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+    public function specials(){
+        $specials = Specialization::all();
+        return response()->json(['specializations'=>$specials],200);
+    }
 
     public function usr_register(Request $request)
     {
@@ -108,7 +112,7 @@ class AuthController extends BaseController
         $expert->save();
         // Expert Available day record add
         $availableDay = new ExpertAvailableDay();
-        $availableDay->expert_id = $user->id;
+        $availableDay->expert_id = $expert->id;
         if ($availableDay->mon = $request->mon !== Null) {
             $availableDay->mon = $request->mon;
         }
@@ -132,7 +136,7 @@ class AuthController extends BaseController
         }
         $availableDay->save();
             $availableTime = new ExpertAvailableTime();
-            $availableTime->expert_id = $user->id;
+            $availableTime->expert_id = $expert->id;
             $availableTime->from = $request->from;
             $availableTime->to = $request->to;
             $availableTime->save();
@@ -151,7 +155,7 @@ class AuthController extends BaseController
                     // add time slot here
                     $time = $slot_time_start . '<=' . $slot_time_end . '<br>';
                     $availableSlot = new ExpertAvailableSlot();
-                    $availableSlot->expert_id = $user->id;
+                    $availableSlot->expert_id = $expert->id;
                     $availableSlot->expert_available_time_id = $availableTime->id;
                     $availableSlot->from = $slot_time_start;
                     $availableSlot->to = $slot_time_end;

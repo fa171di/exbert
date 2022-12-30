@@ -18,6 +18,7 @@ use App\Http\Controllers\BaseController;
 |
 */
 ##################################### Auth Api #########################################
+Route::get('specializations',[AuthController::class,'specials']);
 Route::post('expert-register', [AuthController::class, 'exp_register']);
 Route::post('user-register', [AuthController::class, 'usr_register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -27,6 +28,7 @@ Route::middleware('auth:api')->group(function (){
     Route::get('experts/{id}',[ExpertController::class,'index']);
     Route::get('expert/{id}',[ExpertController::class,'show']);
     Route::post('search',[ExpertController::class,'search']);
+    Route::post('slots',[ExpertController::class,'slots']);
 
 });
 //Route::get('users',[AuthController::class,'index'])->middleware('auth:api');

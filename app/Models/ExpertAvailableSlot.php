@@ -18,7 +18,7 @@ class ExpertAvailableSlot extends Model
         'to',
         'is_deleted'
     ];
-//    function appointment(){
-//        return $this->hasMany(Appointment::class,'available_slot','id');
-//    }
+    function appointment(){
+        return $this->hasMany(Appointment::class,'available_slot','id');
+    }
 }

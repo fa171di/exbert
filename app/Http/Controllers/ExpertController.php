@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\DoctorAvailableSlot;
 use App\Models\Expert;
+use App\Models\ExpertAvailableDay;
+use App\Models\ExpertAvailableSlot;
+use App\Models\ExpertAvailableTime;
 use App\Models\Specialization;
 use Exception;
 use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ExpertController extends Controller
 {
@@ -28,9 +33,40 @@ class ExpertController extends Controller
     }
 
     public function show($id){
+        $user = auth()->user();
         $expert = Expert::with('user')->find($id);
         if ($expert){
+            $expert_available_day = '';
+            $expert_available_time = '';
+            $dayArray = collect();
+            $expert_available_day = ExpertAvailableDay::where('expert_id', $expert->id)->first()->toArray();
+            if ($expert_available_day['sun'] == 0) {
+                $dayArray->push(0);
+            }
+            if ($expert_available_day['mon'] == 0) {
+                $dayArray->push(1);
+            }
+            if ($expert_available_day['tue'] == 0) {
+                $dayArray->push(2);
+            }
+            if ($expert_available_day['wen'] == 0) {
+                $dayArray->push(3);
+            }
+            if ($expert_available_day['thu'] == 0) {
+                $dayArray->push(4);
+            }
+            if ($expert_available_day['fri'] == 0) {
+                $dayArray->push(5);
+            }
+            if ($expert_available_day['sat'] == 0) {
+                $dayArray->push(6);
+            }
+            $expert_available_time = ExpertAvailableTime::where('expert_id', $expert->id)->where('is_deleted', 0)->get();
+
             return response()->json([
+                'available_days' => $expert_available_day,
+                'available_time' => $expert_available_time,
+                'days' => $dayArray,
                 'expert' => $expert,
             ],200);
         }else{
@@ -59,5 +95,22 @@ class ExpertController extends Controller
                 'result' => 'No Results..!',
             ], 200);
         }
+    }
+
+    public function slots(Request $request){
+        $timeId = $request->time_id;
+        $expertId  = $request->expert_id;
+        $date  = $request->dates;
+        $dates = Carbon::createFromFormat('m/d/Y', $date)->format('Y-m-d');
+
+        $appointment_slot = ExpertAvailableSlot::with(['appointment' => function ($re) use ($dates) {
+            $re->where('appointment_date', $dates);
+        }])
+            ->where('expert_available_time_id', $timeId)->get();
+        return response()->json([
+            'appointment_slot' => $appointment_slot,
+            'date' => $dates,
+            'expertId' => $expertId
+        ]);
     }
 }
