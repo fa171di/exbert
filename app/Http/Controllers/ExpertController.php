@@ -107,8 +107,17 @@ class ExpertController extends Controller
             $re->where('appointment_date', $dates);
         }])
             ->where('expert_available_time_id', $timeId)->get();
+        $slots[]=null;
+        $i=0;
+        foreach ($appointment_slot as $slot){
+            if ($slot->appointment) {
+                $slots[$i] = $slot;
+                $i++;
+            }
+        }
         return response()->json([
-            'appointment_slot' => $appointment_slot,
+            'appointment_slot' => $slots,
+            'slots'=>$appointment_slot,
             'date' => $dates,
             'expertId' => $expertId
         ]);

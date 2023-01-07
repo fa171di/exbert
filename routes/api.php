@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ExpertController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,9 @@ Route::middleware('auth:api')->group(function (){
     Route::get('expert/{id}',[ExpertController::class,'show']);
     Route::post('search',[ExpertController::class,'search']);
     Route::post('slots',[ExpertController::class,'slots']);
-
+    ############################ Appointment Routes #############################
+    Route::post('appointment-store',[AppointmentController::class,'appointment_store']);
+    #############################################################################
 });
 //Route::get('users',[AuthController::class,'index'])->middleware('auth:api');
 
