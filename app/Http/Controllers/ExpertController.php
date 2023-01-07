@@ -105,19 +105,17 @@ class ExpertController extends Controller
 
         $appointment_slot = ExpertAvailableSlot::with(['appointment' => function ($re) use ($dates) {
             $re->where('appointment_date', $dates);
-        }])
-            ->where('expert_available_time_id', $timeId)->get();
+        }])->where('expert_available_time_id', $timeId)->get();
         $slots[]=null;
         $i=0;
         foreach ($appointment_slot as $slot){
-            if ($slot->appointment) {
+            if ($slot->appointment->count() == 0) {
                 $slots[$i] = $slot;
                 $i++;
             }
         }
         return response()->json([
             'appointment_slot' => $slots,
-            'slots'=>$appointment_slot,
             'date' => $dates,
             'expertId' => $expertId
         ]);

@@ -32,8 +32,14 @@ Route::middleware('auth:api')->group(function (){
     Route::post('slots',[ExpertController::class,'slots']);
     ############################ Appointment Routes #############################
     Route::post('appointment-store',[AppointmentController::class,'appointment_store']);
+    Route::get('user-appointments',[AppointmentController::class,'usr_appoints']);
+    Route::get('expert-appointments',[AppointmentController::class,'exp_appoints']);
+    Route::get('user-upcoming-appointments',[AppointmentController::class,'usr_upcoming_appoints']);
+    Route::get('expert-upcoming-appointments',[AppointmentController::class,'exp_upcoming_appoints']);
+    Route::get('cancel-appointment/{id}',[AppointmentController::class,'cancel_appoint']);
+    Route::get('confirm-appointment/{id}',[AppointmentController::class,'confirm_appoint']);
+    Route::get('today-appointments',[AppointmentController::class,'today_appoints']);
     #############################################################################
 });
-//Route::get('users',[AuthController::class,'index'])->middleware('auth:api');
 
 
