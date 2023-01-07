@@ -7,6 +7,7 @@ use App\Models\Expert;
 use App\Models\ExpertAvailableDay;
 use App\Models\ExpertAvailableSlot;
 use App\Models\ExpertAvailableTime;
+use App\Models\Favourite;
 use App\Models\Specialization;
 use Exception;
 use http\Env\Response;
@@ -120,4 +121,51 @@ class ExpertController extends Controller
             'expertId' => $expertId
         ]);
     }
+
+    public function favourite(){
+        $user = auth()->user();
+        $userID = $user->id;
+        $favourites = Favourite::with('expert')->where('user_id',$userID)->get();
+        return response()->json([
+            'favourites' => $favourites,
+        ]);
+    }
+
+    public function add_favourite($id){
+        $user = auth()->user();
+        $userID = $user->id;
+        $expert = Expert::with('user')->find($id);
+        if ($expert) {
+            $favourite = new Favourite();
+            $favourite->user_id = $userID;
+            $favourite->expert_id = $expert->id;
+            $favourite->save();
+            $fav = Favourite::with('expert')->find($favourite->id);
+            return response()->json([
+                'favourite' => $fav,
+            ]);
+        }else{
+            return response()->json([
+               'error' => 'Expert Not Found ..!'
+            ],406);
+        }
+    }
+
+    public function remove_favourite($id){
+        $user = auth()->user();
+        $userID = $user->id;
+        $favourite = Favourite::find($id);
+        if ($favourite) {
+            $favourite->delete();
+            return response()->json([
+                'message' => 'Expert Deleted successfully . .',
+            ]);
+        }else{
+            return response()->json([
+                'error' => 'Expert Not Found ..!'
+            ],406);
+        }
+    }
+
+
 }

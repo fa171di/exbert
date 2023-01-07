@@ -18,7 +18,7 @@ use App\Http\Controllers\BaseController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-##################################### Auth Api #########################################
+##################################### Auth Apis #########################################
 Route::get('specializations',[AuthController::class,'specials']);
 Route::post('expert-register', [AuthController::class, 'exp_register']);
 Route::post('user-register', [AuthController::class, 'usr_register']);
@@ -30,7 +30,10 @@ Route::middleware('auth:api')->group(function (){
     Route::get('expert/{id}',[ExpertController::class,'show']);
     Route::post('search',[ExpertController::class,'search']);
     Route::post('slots',[ExpertController::class,'slots']);
-    ############################ Appointment Routes #############################
+    Route::get('my-favourite',[ExpertController::class,'favourite']);
+    Route::get('add-favourite/{id}',[ExpertController::class,'add_favourite']);
+    Route::get('remove-favourite/{id}',[ExpertController::class,'remove_favourite']);
+    ################################# Appointment Apis ########################################
     Route::post('appointment-store',[AppointmentController::class,'appointment_store']);
     Route::get('user-appointments',[AppointmentController::class,'usr_appoints']);
     Route::get('expert-appointments',[AppointmentController::class,'exp_appoints']);
@@ -39,7 +42,7 @@ Route::middleware('auth:api')->group(function (){
     Route::get('cancel-appointment/{id}',[AppointmentController::class,'cancel_appoint']);
     Route::get('confirm-appointment/{id}',[AppointmentController::class,'confirm_appoint']);
     Route::get('today-appointments',[AppointmentController::class,'today_appoints']);
-    #############################################################################
+    #############################################################################################
 });
 
 
